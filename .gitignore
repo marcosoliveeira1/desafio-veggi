@@ -6,7 +6,7 @@ app/yarn-error.log
 # Laravel 4 specific
 app/bootstrap/compiled.php
 app/app/storage/
-app/
+
 # Laravel 5 & Lumen specific
 app/public/storage
 app/public/hot
