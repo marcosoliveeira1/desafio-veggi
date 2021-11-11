@@ -4,7 +4,26 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class UserFactory extends Factory
+class TaskFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'description' => $this->faker->text(100),
+            'status' => $this->faker->randomElement(['pending', 'completed']),
+            'user_id' => \App\Models\User::factory()->count(5)->create()->first->id
+        ];
+    }
+}
+
+
+
+class UserFactory1 extends Factory
 {
     /**
      * Define the model's default state.
