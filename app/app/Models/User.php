@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name'];
+
+    public function tasks()
+    {
+        return $this->hasMany('App\Models\Task');
+    }
 }
