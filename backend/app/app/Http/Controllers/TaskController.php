@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\HttpStatus;
 use App\Models\Task;
+use App\Models\User;
 use App\Rules\IsValidTaskStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -43,6 +44,10 @@ class TaskController extends Controller
         if ($errorMessages = $this->requestIsValid($request, $this->rules)) {
             return HttpStatus::paramError($errorMessages);
         }
+
+        $userExists = User::find($request->input('user_id'));
+
+        if(!$userExists) return HttpStatus::registerNotFound('User');
 
         $Task = new Task();
         $Task->description = $request->input('description');
@@ -84,7 +89,8 @@ class TaskController extends Controller
         $Task = Task::find( $id);
 
         if(!$Task) return HttpStatus::registerNotFound('Task');
-        $Task->name = $request->input('name');
+        $Task->description = $request->input('description');
+        $Task->status = $request->input('status');
         $Task->save();
 
         return HttpStatus::ok($Task);

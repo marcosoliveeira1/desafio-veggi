@@ -6,22 +6,17 @@ class HttpStatus
 {
     public static function ok($body)
     {
-        return response()->json([
-            $body
-        ], 200);
+        return response()->json($body, 200);
     }
 
     public static function created($body)
     {
-        return response()->json([
-            $body
-        ], 201);
+        return response()->json($body,201);
     }
 
     public static function deleted()
     {
-        return response()->json([
-        ], 204);
+        return response()->json([], 204);
     }
     public static function methodNotAllowed()
     {
