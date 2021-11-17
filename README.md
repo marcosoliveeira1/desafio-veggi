@@ -1,4 +1,5 @@
 
+
 # Desafio técnico Veggi
 
 ## Como rodar o projeto:
@@ -28,26 +29,18 @@ Não há qualquer restrição de linguagem ou framework, mas utilizar **ReactJS*
 Os modelos para essa aplicação serão:
 
 | Usuário |
-
 |-------------------------------|
-
 | - Id |
-
 | - Nome |
 
   
   
 
 | Tarefa |
-
 |-------------------------------|
-
 | - Id |
-
 | - Descrição |
-
 | - Estado(feito, pendente) |
-
 | - user_id |
 
   
@@ -74,5 +67,4 @@ Os modelos para essa aplicação serão:
 - Um Readme no projeto explicando como rodar os servidores.
 
 O foco da avaliação será em como você organiza seu código e estrutura a arquitetura.
-
 
