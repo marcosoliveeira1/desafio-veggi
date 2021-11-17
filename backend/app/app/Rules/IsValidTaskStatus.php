@@ -26,8 +26,8 @@ class IsValidTaskStatus implements Rule
     public function passes($attribute, $value)
     {
         return in_array(strtolower($value), [
-            'completed',
-            'pending',
+            'feito',
+            'pendente',
         ]);
     }
 
@@ -38,6 +38,6 @@ class IsValidTaskStatus implements Rule
      */
     public function message()
     {
-        return 'must be completed or pending';
+        return 'must be "feito" or "pendente"';
     }
 }

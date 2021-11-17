@@ -15,7 +15,7 @@ class TaskFactory extends Factory
     {
         return [
             'description' => $this->faker->text(100),
-            'status' => $this->faker->randomElement(['pending', 'completed']),
+            'status' => $this->faker->randomElement(['pendente', 'feito']),
             'user_id' => \App\Models\User::factory()->count(5)->create()->first->id
         ];
     }

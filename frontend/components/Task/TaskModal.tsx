@@ -39,11 +39,11 @@ export function TaskModal({ modalIsOpen, closeModal, description, setDescription
       </div>
       <div className="mb-3">
         <label className="form-label" htmlFor="state">
-          Estado
+          Status
         </label>
         <select className="form-select" id="state" onChange={(e) => setStatus(e.target.value)} value={status}>
-          <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
+          <option value="pendente">Pendente</option>
+          <option value="feito">Feito</option>
         </select>
       </div>
       <div>
