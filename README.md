@@ -13,6 +13,7 @@ docker-compose up -d --build
 ```
 - Rodar o frontend
 ```bash
+cd frontend
 yarn
 yarn dev
 ```
