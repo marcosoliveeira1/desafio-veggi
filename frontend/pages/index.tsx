@@ -22,17 +22,20 @@ const Home: NextPage = () => {
   useEffect(() => {
     setLoading(true);
     const fetchUsers = async () => {
-      const response = await api.get("/users");
-
-      setUsers(response.data);
-      setLoading(false);
+      try {
+        const response = await api.get("/users");
+        setUsers(response.data);
+      } catch (error) {}
+      finally {
+        setLoading(false);
+      }
     };
     fetchUsers();
   }, []);
 
   async function saveUser() {
-    if(name.trim() === "") {
-      alert("Por favor insira um nome")
+    if (name.trim() === "") {
+      alert("Por favor insira um nome");
       return;
     }
     setLoading(true);
@@ -70,7 +73,7 @@ const Home: NextPage = () => {
   if (loading) {
     return <Loading />;
   }
-  
+
   return (
     <>
       <div className="container">

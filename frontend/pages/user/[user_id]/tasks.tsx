@@ -23,7 +23,7 @@ const Tasks: NextPage = () => {
   const [tasks, setTasks] = useState<Tasks[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("pending");
+  const [status, setStatus] = useState("pendente");
   const [id, setId] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -54,7 +54,7 @@ const Tasks: NextPage = () => {
     }
 
     setDescription("");
-    setStatus("pending")
+    setStatus("pendente")
     setModalIsOpen(false);
     setLoading(false);
   }
@@ -133,8 +133,6 @@ const Tasks: NextPage = () => {
         setDescription={setDescription}
         status={status}
         setStatus={setStatus}
-        // id={id}
-        // setId={setId}
         saveTask={saveTask}
       />
     </>
