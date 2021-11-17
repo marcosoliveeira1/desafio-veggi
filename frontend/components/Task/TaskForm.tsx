@@ -1,21 +1,15 @@
-import Modal from "react-modal";
-
 type TaskModalProps = {
-  modalIsOpen: boolean;
   closeModal: () => void;
   description: string;
   setDescription: (description: string) => void;
   status: string;
   setStatus: (state: string) => void;
   saveTask: () => void;
-  // setName: (name: string) => void;
 };
 
-export function TaskModal({ modalIsOpen, closeModal, description, setDescription, status, setStatus, saveTask }: TaskModalProps) {
-  Modal.setAppElement("#modal-root");
-
+export function TaskForm({ closeModal, description, setDescription, status, setStatus, saveTask }: TaskModalProps) {
   return (
-    <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
+    <>
       <header className="d-flex justify-content-between border-bottom pb-2">
         <h3>Tarefa</h3>
         <div>
@@ -51,6 +45,6 @@ export function TaskModal({ modalIsOpen, closeModal, description, setDescription
           Salvar tarefa
         </button>
       </div>
-    </Modal>
+    </>
   );
 }

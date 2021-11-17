@@ -1,26 +1,26 @@
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { api } from "../../../services/api";
 
 import Modal from "react-modal";
-import { TaskItem } from "../../../components/Task/TaskItem";
-import { TaskModal } from "../../../components/Task/TaskModal";
+import { TaskItem, TaskForm } from "../../../components/Task/";
 
 import { Loading } from "../../../components/Loading";
 import { EmptyResult } from "../../../components/EmptyResult";
+import { AddTask, DeleteTask, GetAllTasksByUser, UpdateTask } from "../../../useCases/Task";
+import { TableHead } from "../../../components/TableHead";
 
-type Tasks = {
+type TaskType = {
   id: string;
   description: string;
   status: string;
   user_id: number;
 };
 
-const Tasks: NextPage = () => {
+const Task: NextPage = () => {
   const router = useRouter();
   const { user_id } = router.query;
-  const [tasks, setTasks] = useState<Tasks[]>([]);
+  const [tasks, setTasks] = useState<TaskType[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("pendente");
@@ -30,40 +30,46 @@ const Tasks: NextPage = () => {
   useEffect(() => {
     setLoading(true);
     const fetchTasks = async () => {
-      const response = await api.get(`user/${user_id}/tasks`);
-      console.log("tasks", response.data);
-
-      setTasks(response.data);
+      const tasksList = await GetAllTasksByUser(`${user_id}`);
+      setTasks(tasksList);
       setLoading(false);
     };
     fetchTasks();
   }, [user_id]);
 
   async function saveTask() {
-    if(description.trim() === "") {
-      alert("Por favor insira uma descrição")
+    if (description.trim() === "") {
+      alert("Por favor insira uma descrição");
       return;
     }
     setLoading(true);
-    if (id !== "") {
-      const response = await api.put(`/tasks/${id}`, { description, status, user_id });
-      setTasks(tasks.map((task) => (task.id === id ? response.data : task)));
-    } else {
-      const response = await api.post("/tasks", { description, status, user_id });
-      setTasks([...tasks, response.data]);
+    try {
+      if (id !== "") {
+        const updateTaks = await UpdateTask(id, { description, status, user_id: Number(user_id) });
+        setTasks(tasks.map((task) => (task.id === id ? updateTaks : task)));
+      } else {
+        const newTask = await AddTask({ description, status, user_id: Number(user_id) });
+        setTasks([...tasks, newTask]);
+      }
+    } catch (error: any) {
+      alert(`${error.message} Tente novamente mais tarde`);
     }
-
+    setId("");
     setDescription("");
-    setStatus("pendente")
+    setStatus("pendente");
     setModalIsOpen(false);
     setLoading(false);
   }
 
   async function deleteTasks(task_id: string) {
     setLoading(true);
-    const response = await api.delete(`tasks/${task_id}`);
-    if (response.status === 204) {
-      setTasks(tasks.filter((task) => task.id !== task_id));
+    try {
+      const statusCode = await DeleteTask(task_id);
+      if (statusCode === 204) {
+        setTasks(tasks.filter((task) => task.id !== task_id));
+      }
+    } catch (error: any) {
+      alert(`${error.message} Tente novamente mais tarde`);
     }
     setLoading(false);
   }
@@ -96,18 +102,14 @@ const Tasks: NextPage = () => {
             <EmptyResult />
           ) : (
             <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col" className="sm-td">
-                    #
-                  </th>
-                  <th scope="col">Descrição</th>
-                  <th scope="col">Status</th>
-                  <th scope="col" className="sm-td">
-                    Opções
-                  </th>
-                </tr>
-              </thead>
+              <TableHead
+                items={[
+                  { content: "#", className: "sm-td" },
+                  { content: "Descrição", className: "" },
+                  { content: "Status", className: "" },
+                  { content: "Opções", className: "sm-td" },
+                ]}
+              />
               <tbody>
                 {tasks &&
                   tasks.map((task) => (
@@ -126,17 +128,19 @@ const Tasks: NextPage = () => {
           )}
         </div>
       </div>
-      <TaskModal
-        modalIsOpen={modalIsOpen}
-        closeModal={closeModal}
-        description={description}
-        setDescription={setDescription}
-        status={status}
-        setStatus={setStatus}
-        saveTask={saveTask}
-      />
+      <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
+        {Modal.setAppElement("#modal-root")}
+        <TaskForm
+          closeModal={closeModal}
+          description={description}
+          setDescription={setDescription}
+          status={status}
+          setStatus={setStatus}
+          saveTask={saveTask}
+        />
+      </Modal>
     </>
   );
 };
 
-export default Tasks;
+export default Task;

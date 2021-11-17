@@ -1,19 +1,14 @@
-import Modal from "react-modal";
-
 type ModalUserProps = {
-  modalIsOpen: boolean;
   closeModal: () => void;
   name: string;
   saveUser: () => void;
   setName: (name: string) => void;
 };
 
-export function UserModal({ modalIsOpen, closeModal, name, saveUser, setName}: ModalUserProps) {
-  Modal.setAppElement("#modal-root");
-
+export function UserForm({ closeModal, name, saveUser, setName}: ModalUserProps) {
   return (
-    <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-      <header className="d-flex justify-content-between border-bottom pb-2">
+    <>
+    <header className="d-flex justify-content-between border-bottom pb-2">
         <h3>Usuários</h3>
         <div>
           <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => closeModal()}>
@@ -32,6 +27,7 @@ export function UserModal({ modalIsOpen, closeModal, name, saveUser, setName}: M
           Salvar usuário
         </button>
       </div>
-    </Modal>
+    </>
+   
   );
 }

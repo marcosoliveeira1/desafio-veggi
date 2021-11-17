@@ -1,12 +1,13 @@
 import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
+import Modal from "react-modal";
 
-import { api } from "../services/api";
 
-import { UserItem } from "../components/User/UserItem";
-import { UserModal } from "../components/User/UserModal";
+import { UserItem, UserForm } from "../components/User";
 import { Loading } from "../components/Loading";
 import { EmptyResult } from "../components/EmptyResult";
+import { GetAllUsers, AddUser, UpdateUser, DeleteUser } from "../useCases/User";
+import { TableHead } from "../components/TableHead";
 
 type User = { id: string; name: string };
 
@@ -23,10 +24,10 @@ const Home: NextPage = () => {
     setLoading(true);
     const fetchUsers = async () => {
       try {
-        const response = await api.get("/users");
-        setUsers(response.data);
-      } catch (error) {}
-      finally {
+        const userList = await GetAllUsers();
+        setUsers(userList);
+      } catch (error) {
+      } finally {
         setLoading(false);
       }
     };
@@ -39,24 +40,32 @@ const Home: NextPage = () => {
       return;
     }
     setLoading(true);
-    if (id !== "") {
-      const response = await api.put(`/users/${id}`, { name });
-      setUsers(users.map((user) => (user.id === id ? response.data : user)));
-    } else {
-      const response = await api.post("/users", { name });
-      setUsers([...users, response.data]);
+    try {
+      if (id !== "") {
+        const updatedUser = await UpdateUser(id, { name });
+        setUsers(users.map((user) => (user.id === id ? updatedUser : user)));
+      } else {
+        const newUser = await AddUser({ name });
+        setUsers([...users, newUser]);
+      }
+    } catch (error: any) {
+      alert(`${error.message} Tente novamente mais tarde`);
     }
     setName("");
-
+    setId("");
     setModalIsOpen(false);
     setLoading(false);
   }
 
   async function deleteUser(user_id: string) {
     setLoading(true);
-    const response = await api.delete(`users/${user_id}`);
-    if (response.status === 204) {
-      setUsers(users.filter((user) => user.id !== user_id));
+    try {
+      const statusCode = await DeleteUser(user_id);
+      if (statusCode === 204) {
+        setUsers(users.filter((user) => user.id !== user_id));
+      }
+    } catch (error: any) {
+      alert(`${error.message} Tente novamente mais tarde`);
     }
     setLoading(false);
   }
@@ -84,21 +93,17 @@ const Home: NextPage = () => {
           </button>
         </div>
         <div>
-          {!loading && !(users.length > 0) ? (
+          {!loading && users && !(users.length > 0) ? (
             <EmptyResult />
           ) : (
             <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col" className="sm-td">
-                    #
-                  </th>
-                  <th scope="col">Nome</th>
-                  <th scope="col" className="sm-td">
-                    Opções
-                  </th>
-                </tr>
-              </thead>
+              <TableHead
+                items={[
+                  { content: "#", className: "sm-td" },
+                  { content: "Nome", className: "" },
+                  { content: "Opções", className: "sm-td" },
+                ]}
+              />
               <tbody>
                 {users &&
                   users.map((user) => {
@@ -118,8 +123,10 @@ const Home: NextPage = () => {
           )}
         </div>
       </div>
-
-      <UserModal modalIsOpen={modalIsOpen} closeModal={closeModal} saveUser={saveUser} name={name} setName={setName} />
+      <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
+        { Modal.setAppElement("#modal-root") }
+        <UserForm closeModal={closeModal} saveUser={saveUser} name={name} setName={setName} />
+      </Modal>
     </>
   );
 };
