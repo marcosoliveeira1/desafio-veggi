@@ -1,4 +1,4 @@
-html,
+/* html,
 body {
   padding: 0;
   margin: 0;
@@ -13,4 +13,19 @@ a {
 
 * {
   box-sizing: border-box;
+} */
+
+
+table .sm-td{
+  width: 20%;
+}
+
+.ReactModal__Content--after-open{
+  max-width:720px;
+  max-height:720px;
+  margin: auto;
+}
+
+a {
+  color: inherit;
 }
